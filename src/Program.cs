@@ -1,4 +1,5 @@
 ﻿using System;
+using AirlineReservationSystem.Services;
 
 namespace AirlineReservationSystem
 {
@@ -7,6 +8,7 @@ namespace AirlineReservationSystem
         static void Main(string[] args)
         {
             bool exit = false;
+            var adminService = new AdminService();
 
             while (!exit)
             {
@@ -22,7 +24,7 @@ namespace AirlineReservationSystem
                 switch (choice)
                 {
                     case "1":
-                        AdminService.Login();
+                        adminService.AdminLogin();
                         break;
 
                     case "2":

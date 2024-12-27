@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace AirlineReservationSystem
+namespace AirlineReservationSystem.FileHandler
 {
-    public static class FileHandler<T>
+    public class FileHandler<T>
     {
         public static List<T> LoadData(string filePath)
         {
