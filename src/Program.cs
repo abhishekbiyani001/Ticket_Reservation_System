@@ -9,6 +9,7 @@ namespace AirlineReservationSystem
         {
             bool exit = false;
             var adminService = new AdminService();
+            var userService = new UserService();
 
             while (!exit)
             {
@@ -28,7 +29,7 @@ namespace AirlineReservationSystem
                         break;
 
                     case "2":
-                        UserService.Login();
+                        userService.UserLogin();
                         break;
 
                     case "3":

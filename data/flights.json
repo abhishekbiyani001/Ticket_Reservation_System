@@ -7,5 +7,41 @@
     "Time": "09:00:00",
     "Stops": 0,
     "Price": 30000.0
+  },
+  {
+    "FlightNumber": "707",
+    "Source": "pune",
+    "Destination": "mumbai",
+    "Date": "2024-12-12T00:00:00",
+    "Time": "12:00:00",
+    "Stops": 1,
+    "Price": 2000.0
+  },
+  {
+    "FlightNumber": "123",
+    "Source": "goa",
+    "Destination": "kop",
+    "Date": "2024-12-13T00:00:00",
+    "Time": "13:45:00",
+    "Stops": 0,
+    "Price": 3999.0
+  },
+  {
+    "FlightNumber": "124",
+    "Source": "lucknow",
+    "Destination": "hyd",
+    "Date": "2024-12-31T00:00:00",
+    "Time": "14:30:00",
+    "Stops": 1,
+    "Price": 2999.0
+  },
+  {
+    "FlightNumber": "125",
+    "Source": "goa",
+    "Destination": "kop",
+    "Date": "2024-12-14T00:00:00",
+    "Time": "15:30:00",
+    "Stops": 0,
+    "Price": 3499.0
   }
 ]

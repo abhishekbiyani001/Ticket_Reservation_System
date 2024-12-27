@@ -1,10 +1,17 @@
 [
   {
-    "Username": "user1",
-    "Password": "password1"
-  },
-  {
     "Username": "abhishek",
-    "Password": "0000"
+    "Password": "0000",
+    "BookedFlights": [
+      {
+        "FlightNumber": "125",
+        "Source": "goa",
+        "Destination": "kop",
+        "Date": "2024-12-14T00:00:00",
+        "Time": "15:30:00",
+        "Stops": 0,
+        "Price": 3499.0
+      }
+    ]
   }
 ]
