@@ -17,6 +17,11 @@ namespace AirlineReservationSystem.Services
         public void AddFlight(Flight flight)
         {
             var flights = GetAllFlights();
+            if (flights.Exists(f => f.FlightNumber == flight.FlightNumber))
+            {
+                Console.WriteLine("A flight with the same flight number already exists.");
+                return;
+            }
             flights.Add(flight);
             FileHandler<Flight>.SaveData(FlightDataPath, flights);
         }

@@ -26,6 +26,11 @@ namespace AirlineReservationSystem.Models
             get;
             set;
         }
+        public required int BookedTickets
+        {
+            get;
+            set;
+        } = 0;
         public required decimal Price {
             get;
             set;

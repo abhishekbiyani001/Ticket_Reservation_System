@@ -64,7 +64,22 @@ namespace AirlineReservationSystem.Services
             if (updatedBookings.Count != _currentUser.BookedFlights.Count)
             {
                 _currentUser.BookedFlights = updatedBookings;
-                FileHandler<User>.SaveData("data/users.json", new List<User> { _currentUser });
+
+                var allUsers = FileHandler<User>.LoadData("data/users.json");
+
+                var userIndex = allUsers.FindIndex(u => u.Username == _currentUser.Username);
+
+                if (userIndex != -1)
+                {
+                    allUsers[userIndex] = _currentUser;
+                }
+                else
+                {
+                    allUsers.Add(_currentUser);
+                }
+
+                FileHandler<User>.SaveData("data/users.json", allUsers);
+
                 Console.WriteLine("\nSome of your bookings have been removed due to flight details modification.");
             }
         }
@@ -142,6 +157,10 @@ namespace AirlineReservationSystem.Services
 
         private void BookFlight()
         {
+            if (_currentUser == null)
+            {
+                return;
+            }
             Console.Clear();
             Console.WriteLine("\n--- Book Flight ---");
 
@@ -169,6 +188,7 @@ namespace AirlineReservationSystem.Services
                 Console.WriteLine($"Time: {flight.Time:hh\\:mm}");
                 Console.WriteLine($"Stops: {flight.Stops}");
                 Console.WriteLine($"Price: {flight.Price:C}");
+                Console.WriteLine($"Tickets Booked: {flight.BookedTickets} / 500");
                 Console.WriteLine("----------------------------");
             }
 
@@ -182,28 +202,66 @@ namespace AirlineReservationSystem.Services
                 return;
             }
 
-            _currentUser!.BookedFlights.Add(selectedFlight);
-            FileHandler<User>.SaveData("data/users.json", new List<User> { _currentUser });
-
-            var ticket = new Ticket
+            int numberOfTickets;
+            do
             {
-                TicketId = new Random().Next(1, 1000),
-                UserId = _currentUser.Username,
-                FlightNumber = selectedFlight.FlightNumber,
-                Source = selectedFlight.Source,
-                Destination = selectedFlight.Destination,
-                Date = selectedFlight.Date.ToString("dd-MM-yyyy"),
-                Time = selectedFlight.Time.ToString("hh\\:mm"),
-                Price = selectedFlight.Price,
-                BookingStatus = "Booked",
-                BookingDate = DateTime.Now.ToString("dd-MM-yyyy")
-            };
+                Console.Write($"Enter the number of tickets to book (1-{500 - selectedFlight.BookedTickets}): ");
+                string input = Console.ReadLine()!;
+                if (int.TryParse(input, out numberOfTickets) &&
+                    numberOfTickets > 0 &&
+                    numberOfTickets + selectedFlight.BookedTickets <= 500)
+                {
+                    break;
+                }
+                Console.WriteLine($"Invalid input. Please enter a positive number between 1 and {500 - selectedFlight.BookedTickets}.");
+            } while (true);
+
+            selectedFlight.BookedTickets += numberOfTickets;
+
+            for (int i = 0; i < numberOfTickets; i++)
+            {
+                _currentUser!.BookedFlights.Add(selectedFlight);
+            }
+
+            var allUsers = FileHandler<User>.LoadData("data/users.json");
+
+            var userIndex = allUsers.FindIndex(u => u.Username == _currentUser.Username);
+
+            if (userIndex != -1)
+            {
+                allUsers[userIndex] = _currentUser;
+            }
+            else
+            {
+                allUsers.Add(_currentUser);
+            }
+
+            FileHandler<User>.SaveData("data/users.json", allUsers);
+
+            _flightService.UpdateFlight(selectedFlight.FlightNumber, selectedFlight);
+
+            Console.WriteLine($"\n{numberOfTickets} tickets booked successfully for Flight Number: {selectedFlight.FlightNumber}!");
 
             var tickets = FileHandler<Ticket>.LoadData("data/tickets.json");
-            tickets.Add(ticket);
+            for (int i = 0; i < numberOfTickets; i++)
+            {
+                var ticket = new Ticket
+                {
+                    TicketId = new Random().Next(1, 1000),
+                    UserId = _currentUser.Username,
+                    FlightNumber = selectedFlight.FlightNumber,
+                    Source = selectedFlight.Source,
+                    Destination = selectedFlight.Destination,
+                    Date = selectedFlight.Date.ToString("dd-MM-yyyy"),
+                    Time = selectedFlight.Time.ToString("hh\\:mm"),
+                    Price = selectedFlight.Price,
+                    BookingStatus = "Booked",
+                    BookingDate = DateTime.Now.ToString("dd-MM-yyyy")
+                };
+                tickets.Add(ticket);
+            }
             FileHandler<Ticket>.SaveData("data/tickets.json", tickets);
 
-            Console.WriteLine("\nFlight booked successfully!");
             UpdateTicketDetails(selectedFlight);
         }
 
@@ -243,9 +301,22 @@ namespace AirlineReservationSystem.Services
         {
             Console.Clear();
             Console.WriteLine("\n--- Cancel Booking ---");
+
+            if (_currentUser == null)
+            {
+                Console.WriteLine("User session is not active. Please log in again.");
+                return;
+            }
+
+            if (_currentUser.BookedFlights.Count == 0)
+            {
+                Console.WriteLine("You have no bookings to cancel.");
+                return;
+            }
+
             Console.Write("Enter Flight Number to Cancel Booking: ");
             string flightNumber = Console.ReadLine()!;
-            var flight = _currentUser!.BookedFlights.FirstOrDefault(f => f.FlightNumber == flightNumber);
+            var flight = _currentUser.BookedFlights.FirstOrDefault(f => f.FlightNumber == flightNumber);
 
             if (flight == null)
             {
@@ -253,19 +324,54 @@ namespace AirlineReservationSystem.Services
                 return;
             }
 
-            _currentUser.BookedFlights.Remove(flight);
-            FileHandler<User>.SaveData("data/users.json", new List<User> { _currentUser });
+            Console.WriteLine("\n1. Cancel All Tickets");
+            Console.WriteLine("2. Cancel certain number of Tickets");
+            Console.Write("\nEnter your choice (1 or 2): ");
+            string? choice = Console.ReadLine();
 
-            var tickets = FileHandler<Ticket>.LoadData("data/tickets.json");
-            var ticket = tickets.FirstOrDefault(t => t.FlightNumber == flightNumber && t.UserId == _currentUser.Username);
-
-            if (ticket != null)
+            switch (choice)
             {
-                ticket.BookingStatus = "Canceled";
-                FileHandler<Ticket>.SaveData("data/tickets.json", tickets);
+                case "1":
+                    int ticketsToCancel = _currentUser.BookedFlights.Count(f => f.FlightNumber == flightNumber);
+                    _currentUser.BookedFlights.RemoveAll(f => f.FlightNumber == flightNumber);
+                    flight.BookedTickets -= ticketsToCancel;
+
+                    Console.WriteLine($"\nAll {ticketsToCancel} tickets canceled for Flight Number: {flightNumber}.");
+                    break;
+
+                case "2":
+                    int userTickets = _currentUser.BookedFlights.Count(f => f.FlightNumber == flightNumber);
+
+                    int ticketsToRemove;
+                    do
+                    {
+                        Console.Write($"Enter the number of tickets to cancel (1-{userTickets}): ");
+                        string input = Console.ReadLine()!;
+                        if (int.TryParse(input, out ticketsToRemove) && ticketsToRemove > 0 && ticketsToRemove <= userTickets)
+                        {
+                            break;
+                        }
+                        Console.WriteLine("Invalid input. Please enter a valid positive number within your booking count.");
+                    } while (true);
+
+                    for (int i = 0; i < ticketsToRemove; i++)
+                    {
+                        _currentUser.BookedFlights.Remove(flight);
+                    }
+                    flight.BookedTickets -= ticketsToRemove;
+
+                    Console.WriteLine($"\n{ticketsToRemove} tickets canceled for Flight Number: {flightNumber}.");
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid choice. No tickets were canceled.");
+                    return;
             }
 
-            Console.WriteLine("\nBooking canceled successfully!");
+            FileHandler<User>.SaveData("data/users.json", new List<User> { _currentUser });
+            _flightService.UpdateFlight(flight.FlightNumber, flight);
+
+            Console.WriteLine("\nCancellation updated successfully.");
         }
 
         private void ViewMyBookings()

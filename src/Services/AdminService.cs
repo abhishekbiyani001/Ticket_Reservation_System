@@ -125,7 +125,8 @@ namespace AirlineReservationSystem.Services
             var newUser = new User
             {
                 Username = username,
-                Password = password
+                Password = password,
+                BookedFlights = new List<Flight>()
             };
 
             users.Add(newUser);
@@ -152,6 +153,13 @@ namespace AirlineReservationSystem.Services
                 {
                     Console.WriteLine("Flight Number must be a positive integer.");
                 }
+            }
+
+            var existingFlight = _flightService.GetAllFlights().FirstOrDefault(f => f.FlightNumber == flightNumber);
+            if (existingFlight != null)
+            {
+                Console.WriteLine("A flight with this flight number already exists.");
+                return;
             }
 
             string source;
@@ -242,7 +250,8 @@ namespace AirlineReservationSystem.Services
                 Date = date,
                 Time = time,
                 Stops = stops,
-                Price = price
+                Price = price,
+                BookedTickets = 0
             };
 
             _flightService.AddFlight(flight);
@@ -256,8 +265,9 @@ namespace AirlineReservationSystem.Services
             Console.Write("Enter Flight Number to Modify: ");
             string flightNumber = Console.ReadLine()!;
 
-            var flights = _flightService.GetAllFlights();
-            var flight = flights.Find(f => f.FlightNumber == flightNumber);
+            //var flights = _flightService.GetAllFlights();
+            //var flight = flights.Find(f => f.FlightNumber == flightNumber);
+            var flight = _flightService.GetAllFlights().FirstOrDefault(f => f.FlightNumber == flightNumber);
 
             if (flight == null)
             {
@@ -391,6 +401,7 @@ namespace AirlineReservationSystem.Services
                 Console.WriteLine($"Time: {flight.Time:hh\\:mm}");
                 Console.WriteLine($"Stops: {flight.Stops}");
                 Console.WriteLine($"Price: {flight.Price:C}");
+                Console.WriteLine($"Tickets Booked: {flight.BookedTickets} / 500");
                 Console.WriteLine("----------------------------");
             }
         }
