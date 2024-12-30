@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using AirlineReservationSystem.Models;
 using AirlineReservationSystem.Services;
 using AirlineReservationSystem.FileHandler;
@@ -56,9 +58,10 @@ namespace AirlineReservationSystem.Services
                 Console.WriteLine("3. Delete Flight");
                 Console.WriteLine("4. View All Flights");
                 Console.WriteLine("5. Add New Admin");
-                Console.WriteLine("6. Logout");
+                Console.WriteLine("6. Add New User");
+                Console.WriteLine("7. Logout");
 
-                Console.Write("\nEnter your choice (1-5): ");
+                Console.Write("\nEnter your choice (1-7): ");
                 string? choice = Console.ReadLine();
 
                 switch (choice)
@@ -79,17 +82,56 @@ namespace AirlineReservationSystem.Services
                         AddNewAdmin();
                         break;
                     case "6":
+                        AddNewUser();
+                        break;
+                    case "7":
                         logout = true;
                         Console.WriteLine("Logged out successfully!");
                         break;
 
                     default:
-                        Console.WriteLine("Invalid choice. Please enter 1-5.");
+                        Console.WriteLine("Invalid choice. Please enter 1-7.");
                         break;
                 }
                 Console.WriteLine("\nPress any key to continue...");
                 Console.ReadKey();
             }
+        }
+
+        private void AddNewUser()
+        {
+            Console.Clear();
+            Console.WriteLine("\n--- Add New User ---");
+
+            Console.Write("Enter New User Username: ");
+            string username = Console.ReadLine()!;
+            Console.Write("Enter New User Password: ");
+            string password = Console.ReadLine()!;
+
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                Console.WriteLine("\nUsername and password cannot be empty.");
+                return;
+            }
+
+            var users = FileHandler<User>.LoadData("data/users.json");
+
+            if (users.Any(u => u.Username == username))
+            {
+                Console.WriteLine("\nUser with this username already exists.");
+                return;
+            }
+
+            var newUser = new User
+            {
+                Username = username,
+                Password = password
+            };
+
+            users.Add(newUser);
+            FileHandler<User>.SaveData("data/users.json", users);
+
+            Console.WriteLine("\nNew user added successfully!");
         }
 
         private void AddFlight()
