@@ -1,0 +1,98 @@
+[
+  {
+    "TicketId": 178,
+    "UserId": "abhishek",
+    "FlightNumber": "001",
+    "Source": "p",
+    "Destination": "m",
+    "Date": "12-00-2024",
+    "Time": "23:50",
+    "Price": 2999.0,
+    "BookingStatus": "Booked",
+    "BookingDate": "31-12-2024"
+  },
+  {
+    "TicketId": 974,
+    "UserId": "abhishek",
+    "FlightNumber": "001",
+    "Source": "p",
+    "Destination": "m",
+    "Date": "12-00-2024",
+    "Time": "23:50",
+    "Price": 2999.0,
+    "BookingStatus": "Booked",
+    "BookingDate": "31-12-2024"
+  },
+  {
+    "TicketId": 771,
+    "UserId": "abhishek",
+    "FlightNumber": "001",
+    "Source": "p",
+    "Destination": "m",
+    "Date": "12-00-2024",
+    "Time": "23:50",
+    "Price": 2999.0,
+    "BookingStatus": "Booked",
+    "BookingDate": "31-12-2024"
+  },
+  {
+    "TicketId": 690,
+    "UserId": "abhi",
+    "FlightNumber": "001",
+    "Source": "p",
+    "Destination": "m",
+    "Date": "12-00-2024",
+    "Time": "23:50",
+    "Price": 2999.0,
+    "BookingStatus": "Booked",
+    "BookingDate": "31-12-2024"
+  },
+  {
+    "TicketId": 965,
+    "UserId": "abhi",
+    "FlightNumber": "001",
+    "Source": "p",
+    "Destination": "m",
+    "Date": "12-00-2024",
+    "Time": "23:50",
+    "Price": 2999.0,
+    "BookingStatus": "Booked",
+    "BookingDate": "31-12-2024"
+  },
+  {
+    "TicketId": 562,
+    "UserId": "abhi",
+    "FlightNumber": "001",
+    "Source": "p",
+    "Destination": "m",
+    "Date": "12-00-2024",
+    "Time": "23:50",
+    "Price": 2999.0,
+    "BookingStatus": "Booked",
+    "BookingDate": "31-12-2024"
+  },
+  {
+    "TicketId": 182,
+    "UserId": "abhi",
+    "FlightNumber": "001",
+    "Source": "p",
+    "Destination": "m",
+    "Date": "12-00-2024",
+    "Time": "23:50",
+    "Price": 2999.0,
+    "BookingStatus": "Booked",
+    "BookingDate": "31-12-2024"
+  },
+  {
+    "TicketId": 178,
+    "UserId": "abhi",
+    "FlightNumber": "001",
+    "Source": "p",
+    "Destination": "m",
+    "Date": "12-00-2024",
+    "Time": "23:50",
+    "Price": 2999.0,
+    "BookingStatus": "Booked",
+    "BookingDate": "31-12-2024"
+  }
+]

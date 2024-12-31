@@ -10,6 +10,35 @@ namespace AirlineReservationSystem.Services
     public class AdminService
     {
         private readonly FlightService _flightService = new();
+        private readonly NotificationService _notificationService;
+
+        public AdminService(NotificationService notificationService)
+        {
+            _notificationService = notificationService;
+            _notificationService.NotifyAdmin += OnNotificationReceived;
+        }
+
+        private void OnNotificationReceived(string message)
+        {
+            Console.WriteLine($"New Notification: {message}");
+        }
+
+        private void DisplayNotifications()
+        {
+            var notifications = _notificationService.GetNotifications();
+            if (notifications.Count == 0)
+            {
+                Console.WriteLine("No new notifications.");
+            }
+            else
+            {
+                Console.WriteLine("\n--- Notifications ---");
+                foreach (var notification in notifications)
+                {
+                    Console.WriteLine(notification);
+                }
+            }
+        }
 
         public void AdminLogin()
         {
@@ -52,6 +81,7 @@ namespace AirlineReservationSystem.Services
             {
                 Console.Clear();
                 Console.WriteLine("You have successfully logged in.");
+                DisplayNotifications();
                 Console.WriteLine("\n--- Admin Menu ---");
                 Console.WriteLine("1. Add New Flight");
                 Console.WriteLine("2. Modify Flight Details");
@@ -86,6 +116,7 @@ namespace AirlineReservationSystem.Services
                         break;
                     case "7":
                         logout = true;
+                        _notificationService.ClearNotifications();
                         Console.WriteLine("Logged out successfully!");
                         break;
 

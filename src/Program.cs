@@ -8,8 +8,9 @@ namespace AirlineReservationSystem
         static void Main(string[] args)
         {
             bool exit = false;
-            var adminService = new AdminService();
-            var userService = new UserService();
+            NotificationService notificationService = new NotificationService();
+            AdminService adminService = new AdminService(notificationService);
+            UserService userService = new UserService(notificationService);
 
             while (!exit)
             {
