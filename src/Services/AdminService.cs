@@ -229,7 +229,14 @@ namespace AirlineReservationSystem.Services
                 Console.Write("Date (dd-MM-yyyy): ");
                 if (DateTime.TryParseExact(Console.ReadLine(), "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out date))
                 {
-                    break;
+                    if (date > DateTime.Now.Date)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Date cannot be {date:dd-MM-yyyy}. Please enter a future date.");
+                    }
                 }
                 else
                 {
@@ -296,8 +303,6 @@ namespace AirlineReservationSystem.Services
             Console.Write("Enter Flight Number to Modify: ");
             string flightNumber = Console.ReadLine()!;
 
-            //var flights = _flightService.GetAllFlights();
-            //var flight = flights.Find(f => f.FlightNumber == flightNumber);
             var flight = _flightService.GetAllFlights().FirstOrDefault(f => f.FlightNumber == flightNumber);
 
             if (flight == null)
@@ -324,15 +329,27 @@ namespace AirlineReservationSystem.Services
 
             Console.Write("New Date (dd-MM-yyyy, Leave blank to keep current): ");
             string dateInput = Console.ReadLine()!;
-            if (!string.IsNullOrWhiteSpace(dateInput) && !DateTime.TryParseExact(dateInput, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out _))
+            if (!string.IsNullOrWhiteSpace(dateInput))
             {
-                Console.WriteLine("Date not entered in proper format.");
-                return;
+                if (DateTime.TryParseExact(dateInput, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime date))
+                {
+                    if (date <= DateTime.Now.Date)
+                    {
+                        Console.WriteLine($"Date cannot be {date:dd-MM-yyyy}. Please enter a future date.");
+                        return;
+                    }
+                    flight.Date = date;
+                }
+                else
+                {
+                    Console.WriteLine("Date not entered in proper format.");
+                    return;
+                }
             }
 
             Console.Write("New Time (HH:mm, Leave blank to keep current): ");
             string timeInput = Console.ReadLine()!;
-            if (!string.IsNullOrWhiteSpace(timeInput) && !TimeSpan.TryParseExact(timeInput, "hh\\:mm", null, out _))
+            if (!string.IsNullOrWhiteSpace(timeInput) && !TimeSpan.TryParseExact(timeInput, "hh\\:mm", null, out TimeSpan time))
             {
                 Console.WriteLine("Time not entered in proper format.");
                 return;
@@ -356,7 +373,7 @@ namespace AirlineReservationSystem.Services
 
             flight.Source = string.IsNullOrEmpty(source) ? flight.Source : source;
             flight.Destination = string.IsNullOrEmpty(destination) ? flight.Destination : destination;
-            flight.Date = string.IsNullOrEmpty(dateInput) ? flight.Date : DateTime.ParseExact(dateInput, "dd-MM-yyyy", null);
+            //flight.Date = string.IsNullOrEmpty(dateInput) ? flight.Date : DateTime.ParseExact(dateInput, "dd-MM-yyyy", null);
             flight.Time = string.IsNullOrEmpty(timeInput) ? flight.Time : TimeSpan.ParseExact(timeInput, "hh\\:mm", null);
             flight.Stops = string.IsNullOrEmpty(stopsInput) ? flight.Stops : int.Parse(stopsInput);
             flight.Price = string.IsNullOrEmpty(priceInput) ? flight.Price : decimal.Parse(priceInput);
