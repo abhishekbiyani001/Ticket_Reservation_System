@@ -24,5 +24,61 @@
         "Price": 2999.0
       }
     ]
+  },
+  {
+    "Username": "abhishek",
+    "Password": "0000",
+    "BookedFlights": [
+      {
+        "FlightNumber": "002",
+        "Source": "m",
+        "Destination": "p",
+        "Date": "2025-01-03T00:00:00",
+        "Time": "13:20:00",
+        "Stops": 0,
+        "BookedTickets": 4,
+        "Price": 3999.0
+      },
+      {
+        "FlightNumber": "002",
+        "Source": "m",
+        "Destination": "p",
+        "Date": "2025-01-03T00:00:00",
+        "Time": "13:20:00",
+        "Stops": 0,
+        "BookedTickets": 4,
+        "Price": 3999.0
+      },
+      {
+        "FlightNumber": "002",
+        "Source": "m",
+        "Destination": "p",
+        "Date": "2025-01-03T00:00:00",
+        "Time": "13:20:00",
+        "Stops": 0,
+        "BookedTickets": 4,
+        "Price": 3999.0
+      },
+      {
+        "FlightNumber": "002",
+        "Source": "m",
+        "Destination": "p",
+        "Date": "2025-01-03T00:00:00",
+        "Time": "13:20:00",
+        "Stops": 0,
+        "BookedTickets": 4,
+        "Price": 3999.0
+      },
+      {
+        "FlightNumber": "002",
+        "Source": "m",
+        "Destination": "p",
+        "Date": "2025-01-03T00:00:00",
+        "Time": "13:20:00",
+        "Stops": 0,
+        "BookedTickets": 5,
+        "Price": 3999.0
+      }
+    ]
   }
 ]

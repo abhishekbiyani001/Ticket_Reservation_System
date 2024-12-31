@@ -9,12 +9,13 @@ namespace AirlineReservationSystem.Services
 {
     public class AdminService
     {
-        private readonly FlightService _flightService = new();
+        private readonly FlightService _flightService;
         private readonly NotificationService _notificationService;
 
-        public AdminService(NotificationService notificationService)
+        public AdminService(NotificationService notificationService, FlightService flightService)
         {
             _notificationService = notificationService;
+            _flightService = flightService;
             _notificationService.NotifyAdmin += OnNotificationReceived;
         }
 
@@ -25,7 +26,7 @@ namespace AirlineReservationSystem.Services
 
         private void DisplayNotifications()
         {
-            var notifications = _notificationService.GetNotifications();
+            var notifications = _notificationService.GetAdminNotifications();
             if (notifications.Count == 0)
             {
                 Console.WriteLine("No new notifications.");
@@ -116,7 +117,7 @@ namespace AirlineReservationSystem.Services
                         break;
                     case "7":
                         logout = true;
-                        _notificationService.ClearNotifications();
+                        _notificationService.ClearAdminNotifications();
                         Console.WriteLine("Logged out successfully!");
                         break;
 
@@ -379,6 +380,7 @@ namespace AirlineReservationSystem.Services
             flight.Price = string.IsNullOrEmpty(priceInput) ? flight.Price : decimal.Parse(priceInput);
 
             _flightService.UpdateFlight(flightNumber, flight);
+            _notificationService.AddUserNotification($"Admin has modified details of flight {flightNumber}.");
             Console.WriteLine("\nFlight modified successfully!");
         }
 

@@ -12,9 +12,16 @@ namespace AirlineReservationSystem.Services
         private readonly FlightService _flightService = new();
         private User? _currentUser;
         private readonly NotificationService _notificationService;
+        private readonly List<string> _userNotifications = new List<string>();
         public UserService(NotificationService notificationService)
         {
             _notificationService = notificationService;
+            _notificationService.NotifyUser += OnUserNotificationReceived;
+        }
+
+        private void OnUserNotificationReceived(string message)
+        {
+            _userNotifications.Add(message);
         }
 
         public void UserLogin()
@@ -89,6 +96,22 @@ namespace AirlineReservationSystem.Services
             }
         }
 
+        private void DisplayUserNotifications()
+        {
+            if (_userNotifications.Count == 0)
+            {
+                Console.WriteLine("No new notifications.");
+            }
+            else
+            {
+                Console.WriteLine("\n--- Notifications ---");
+                foreach (var notification in _userNotifications)
+                {
+                    Console.WriteLine(notification);
+                }
+            }
+        }
+
         public void UserMenu()
         {
             bool logout = false;
@@ -97,6 +120,7 @@ namespace AirlineReservationSystem.Services
             {
                 Console.Clear();
                 Console.WriteLine("You have successfully logged in.");
+                DisplayUserNotifications();
                 Console.WriteLine("\n--- User Menu ---");
                 Console.WriteLine("1. View Flights");
                 Console.WriteLine("2. Book Flight");
@@ -123,6 +147,7 @@ namespace AirlineReservationSystem.Services
                         break;
                     case "5":
                         logout = true;
+                        _notificationService.ClearUserNotifications();
                         Console.WriteLine("Logged out successfully!");
                         break;
 
@@ -268,7 +293,7 @@ namespace AirlineReservationSystem.Services
             FileHandler<Ticket>.SaveData("data/tickets.json", tickets);
 
             UpdateTicketDetails(selectedFlight);
-            _notificationService.AddNotification($"User {_currentUser.Username} has booked {numberOfTickets} tickets for Flight Number: {selectedFlight.FlightNumber}.");
+            _notificationService.AddAdminNotification($"User {_currentUser.Username} has booked {numberOfTickets} tickets for Flight Number: {selectedFlight.FlightNumber}.");
         }
 
         private void UpdateTicketDetails(Flight updatedFlight)
@@ -378,7 +403,7 @@ namespace AirlineReservationSystem.Services
             _flightService.UpdateFlight(flight.FlightNumber, flight);
 
             Console.WriteLine("\nCancellation updated successfully.");
-            _notificationService.AddNotification($"User {_currentUser.Username} has cancelled tickets.");
+            _notificationService.AddAdminNotification($"User {_currentUser.Username} has cancelled tickets.");
         }
 
         private void ViewMyBookings()

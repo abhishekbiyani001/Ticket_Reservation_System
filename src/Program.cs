@@ -8,8 +8,10 @@ namespace AirlineReservationSystem
         static void Main(string[] args)
         {
             bool exit = false;
+
             NotificationService notificationService = new NotificationService();
-            AdminService adminService = new AdminService(notificationService);
+
+            AdminService adminService = new AdminService(notificationService, new FlightService());
             UserService userService = new UserService(notificationService);
 
             while (!exit)
@@ -40,6 +42,8 @@ namespace AirlineReservationSystem
 
                     default:
                         Console.WriteLine("Invalid choice. Please enter 1, 2, or 3.");
+                        Console.WriteLine("\nPress any key to continue...");
+                        Console.ReadKey();
                         break;
                 }
             }
